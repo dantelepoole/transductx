@@ -125,9 +125,7 @@ const isgreaterthan9 = predicate(x => (x > 9));
 const double = x => (x*2);
 const sum = (a,b) => (a+b);
 
-const transducer = transducex(isgreaterthan9, double);
-
-[8,9,10,11].reduce(transducer(sum), 0); // returns 42
+transducex(isgreaterthan9, double).reduce(sum, 0, [8,9,10,11]); // returns 42
 
 ```
 
