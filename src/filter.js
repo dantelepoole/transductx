@@ -4,7 +4,7 @@
 
 'use strict';
 
-const TRANSFORM_REJECT = Symbol.for('transducex/transform_reject');
+const TRANSFORM_DROP = Symbol.for('transducex/transform_drop');
 
 const ERR_BAD_PREDICATE = `The predicate function has type %s. Expected a function.`;
 
@@ -17,6 +17,6 @@ module.exports = function filter(predicate) {
     if( notfunction(predicate) ) fail(ERR_BAD_PREDICATE, type(predicate));
 
     return function filtertransform(value) {
-        return predicate(value) ? value : TRANSFORM_REJECT;
+        return predicate(value) ? value : TRANSFORM_DROP;
     }
 }

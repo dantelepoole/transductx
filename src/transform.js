@@ -6,7 +6,7 @@
 
 const ERR_BAD_ITERABLE = `The iterable has type %s. Expected an iterable object.`;
 const ERR_BAD_TRANSFORMATION = `The transformation has type %s. Expected a function.`;
-const TRANSFORM_REJECT = Symbol.for('transducex/transform_reject');
+const TRANSFORM_DROP = Symbol.for('transducex/transform_drop');
 
 const fail = require('../lib/fail');
 const notiterable = require('../lib/notiterable');
@@ -29,7 +29,7 @@ module.exports = function transform(...transformations) {
                     
                     value = transformvalue(value);
 
-                    if( value !== TRANSFORM_REJECT ) yield value;
+                    if( value !== TRANSFORM_DROP ) yield value;
                 }
             }
         }
@@ -46,7 +46,7 @@ function composetransform(transformations) {
 
             value = transformations[index](value);
 
-            if(value === TRANSFORM_REJECT) break;
+            if(value === TRANSFORM_DROP) break;
         }
 
         return value;

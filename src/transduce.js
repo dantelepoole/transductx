@@ -6,7 +6,7 @@
 
 const ERR_BAD_REDUCER = `The reducer has type %s. Expected a function.`;
 const ERR_BAD_TRANSFORMATION = `The transformation has type %s. Expected a function.`;
-const TRANSFORM_REJECT = Symbol.for('transducex/transform_reject');
+const TRANSFORM_DROP = Symbol.for('transducex/transform_drop');
 
 const fail = require('../lib/fail');
 const notfunction = require('../lib/notfunction');
@@ -25,7 +25,7 @@ module.exports = function transduce(...transformations) {
 
             nextvalue = transform(nextvalue);
 
-            return (nextvalue === TRANSFORM_REJECT) ? accumulator : reducer(accumulator, nextvalue);
+            return (nextvalue === TRANSFORM_DROP) ? accumulator : reducer(accumulator, nextvalue);
         }
     }
 
@@ -44,7 +44,7 @@ function composetransform(transformations) {
 
             value = transformations[index](value);
 
-            if(value === TRANSFORM_REJECT) break;
+            if(value === TRANSFORM_DROP) break;
         }
 
         return value;
