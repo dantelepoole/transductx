@@ -108,6 +108,8 @@ reduce(transducer(sum), 0, [1,2,3]); // returns 15
 
 ```
 
+The `reduce()` function can be used with any reducer function, regardless of transduction.
+
 ### predicate(*func*)
 
 The `predicate()` function is necessary to enable filter transformations, since `transducex` needs to be able to
