@@ -6,20 +6,18 @@
 
 const ERR_BAD_REDUCER = `The reducer has type %s. Expected a function.`;
 const ERR_BAD_TRANSFORMATION = `The transformation has type %s. Expected a function.`;
-const TRANSFORM_DROP = Symbol('transducex/transform_drop');
+const TRANSFORM_REJECT = Symbol.for('transducex/transform_reject');
 
 const fail = require('../lib/fail');
-const isfunction = require('../lib/isfunction');
-const ispredicate = require('../lib/ispredicate');
 const notfunction = require('../lib/notfunction');
 const reduce = require('./reduce');
 const type = require('../lib/type');
 
 module.exports = function transducex(...transformations) {
 
-    const transform = compose(transformations);
+    const transform = composetransform(transformations);
 
-    const transducer = function transducer(reducer) {
+    function transducer(reducer) {
 
         if( notfunction(reducer) ) fail(ERR_BAD_REDUCER, type(reducer));
 
@@ -27,7 +25,7 @@ module.exports = function transducex(...transformations) {
 
             nextvalue = transform(nextvalue);
 
-            return (nextvalue === TRANSFORM_DROP) ? accumulator : reducer(accumulator, nextvalue);
+            return (nextvalue === TRANSFORM_REJECT) ? accumulator : reducer(accumulator, nextvalue);
         }
     }
 
@@ -36,33 +34,23 @@ module.exports = function transducex(...transformations) {
     return transducer;
 }
 
-function compose(transformations) {
+function composetransform(transformations) {
 
-    const transformers = transformations.map(transformer);
+    transformations.forEach(validatetransformation);
 
-    return function transform(value) {
+    return function transformvalue(value) {
 
-        for(let index = 0; index < transformers.length; index += 1) {
+        for(let index = 0; index < transformations.length; index += 1) {
 
-            value = transformers[index](value);
+            value = transformations[index](value);
 
-            if(value === TRANSFORM_DROP) break;
+            if(value === TRANSFORM_REJECT) break;
         }
 
         return value;
     }
 }
 
-function transformer(transformation) {
-
-    return ispredicate(transformation) ? filtertransformer(transformation)
-         : isfunction(transformation) ? transformation
-         : fail(ERR_BAD_TRANSFORMATION, type(transformation));
-}
-
-function filtertransformer(predicate) {
-
-    return function filtertransform(value) {
-        return predicate(value) ? value : TRANSFORM_DROP;
-    }
+function validatetransformation(transformation) {
+    if( notfunction(transformation) ) fail(ERR_BAD_TRANSFORMATION, type(transformation));
 }
