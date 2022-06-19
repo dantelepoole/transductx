@@ -65,8 +65,8 @@ accepts a value and returns another value (essentially the type of function you 
 `Array.prototype.map()` method).
 
 The `transducex()` function returns a transducer, i.e. a function that accepts a reducer (the type of function that you
-would pass to Javascript's `Array.prototype.reduce()` method) and returns a reducer that applies the transformations in 
-order to its `currentValue` argument before forwarding it to the argument reducer.
+would pass to Javascript's `Array.prototype.reduce()` method) and returns a new reducer that applies the transformations
+in order before invoking the argument reducer.
 
 ```javascript
 
