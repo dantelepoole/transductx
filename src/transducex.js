@@ -10,7 +10,7 @@ const TRANSFORM_DROP = Symbol('transducex/transform_drop');
 
 const fail = require('../lib/fail');
 const isfunction = require('../lib/isfunction');
-const ispredicate = require('./ispredicate');
+const ispredicate = require('../lib/ispredicate');
 const notfunction = require('../lib/notfunction');
 const type = require('../lib/type');
 
