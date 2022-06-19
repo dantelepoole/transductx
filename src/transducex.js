@@ -12,13 +12,14 @@ const fail = require('../lib/fail');
 const isfunction = require('../lib/isfunction');
 const ispredicate = require('../lib/ispredicate');
 const notfunction = require('../lib/notfunction');
+const reduce = require('./reduce');
 const type = require('../lib/type');
 
 module.exports = function transducex(...transformations) {
 
     const transform = compose(transformations);
 
-    return function transducer(reducer) {
+    const transducer = function transducer(reducer) {
 
         if( notfunction(reducer) ) fail(ERR_BAD_REDUCER, type(reducer));
 
@@ -29,6 +30,10 @@ module.exports = function transducex(...transformations) {
             return (nextvalue === TRANSFORM_DROP) ? accumulator : reducer(accumulator, nextvalue);
         }
     }
+
+    transformer.reduce = reduce;
+    
+    return transducer;
 }
 
 function compose(transformations) {
