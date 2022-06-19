@@ -9,7 +9,6 @@ const ERR_BAD_TRANSFORMATION = `The transformation has type %s. Expected a funct
 const TRANSFORM_REJECT = Symbol.for('transducex/transform_reject');
 
 const fail = require('../lib/fail');
-const isarray = require('../lib/isarray');
 const notiterable = require('../lib/notiterable');
 const notfunction = require('../lib/notfunction');
 const type = require('../lib/type');
@@ -22,20 +21,18 @@ module.exports = function transform(...transformations) {
 
         if( notiterable(iterable) ) fail(ERR_BAD_ITERABLE, type(iterable));
 
-        const transformiterable = {
+        return {
 
             [Symbol.iterator] : function* () {
 
                 for(let value of iterable) {
                     
                     value = transformvalue(value);
-                    
+
                     if( value !== TRANSFORM_REJECT ) yield value;
                 }
             }
         }
-
-        return isarray(iterable) ? Array.from(transformiterable) : transformiterable;
     }
 }
 
