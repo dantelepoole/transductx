@@ -1,5 +1,5 @@
 /**
- * @module transducex
+ * @module transduce
  */
 
 'use strict';
@@ -13,7 +13,7 @@ const notfunction = require('../lib/notfunction');
 const reduce = require('./reduce');
 const type = require('../lib/type');
 
-module.exports = function transducex(...transformations) {
+module.exports = function transduce(...transformations) {
 
     const transform = composetransform(transformations);
 
