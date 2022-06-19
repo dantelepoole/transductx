@@ -31,8 +31,8 @@ module.exports = function transducex(...transformations) {
         }
     }
 
-    transformer.reduce = reduce;
-    
+    transducer.reduce = reduce;
+
     return transducer;
 }
 
