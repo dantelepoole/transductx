@@ -26,9 +26,11 @@ module.exports = function transform(...transformations) {
 
             [Symbol.iterator] : function* () {
 
-                for(const value of iterable) {
-                    const transformedvalue = transformvalue(value);
-                    if( transformedvalue !== TRANSFORM_REJECT ) yield transformedvalue;
+                for(let value of iterable) {
+                    
+                    value = transformvalue(value);
+                    
+                    if( value !== TRANSFORM_REJECT ) yield value;
                 }
             }
         }
