@@ -24,11 +24,11 @@ const result = numbers1to10
 In the above example, the result will be `20`. However, to obtain this result the `numbers1to10` array had to be
 iterated over three times. Transduction is the technique for combining multiple map or filter operations with a reduce
 operation in such a manner that the input array only needs to be iterated over a single time. It won't make much of a
-difference for simple example above, but it can enhance performance significantly when processing large arrays.
+difference in the simple example above, but it can enhance performance significantly when processing large arrays.
 
 For more details on how transductions works, see the following [article](https://codeburst.io/transduction-functional-programming-in-javascript-3b494758a868#:~:text=Transduction%20is%20a%20performance%20optimisation,function%20and%20an%20initial%20value.).
 
-Using `transducex` the example above would rewritten as:
+Using `transducex` the example above would be rewritten as:
 
 ```javascript
 
@@ -49,14 +49,12 @@ The result is the same (`20`) but in this case the `numbers1to10` array is itera
 To install the `transducex` package just type:
 
 ```
-
 $ npm install transducex
-
 ```
 
 ## Usage
 
-The `transducex` package contains two functions: `transducex()` and `predicate()`.
+The `transducex` package contains two key functions: `transducex()` and `predicate()`.
 
 ### transducex(...*transformations*)
 
@@ -113,10 +111,10 @@ The `reduce()` function can be used with any reducer function, regardless of tra
 ### predicate(*func*)
 
 The `predicate()` function is necessary to enable filter transformations, since `transducex` needs to be able to
-distinguish functions that transform their argument from functions intended to filter their argument.
+distinguish functions that transform their argument from functions that filter their argument.
 
 Any function that transforms its argument can be passed directly to `transducex()`. To pass a filter function you must
-first invoke `predicate()` before passing the result to `transducex()`.
+first pass it to `predicate()` before passing the result to `transducex()`.
 
 ``` javascript
 
