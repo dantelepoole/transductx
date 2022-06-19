@@ -2,7 +2,7 @@
   "name": "transducex",
   "version": "1.0.0",
   "description": "A transducer library for Javascript",
-  "main": "./src/index.js",
+  "main": "./src/transducex.js",
   "scripts": {
     "test": "mocha"
   },
