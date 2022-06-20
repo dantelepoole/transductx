@@ -24,10 +24,10 @@ function.
 The `transduce()` function takes one or more transformation functions, i.e. any function that accepts a single argument
 and transforms it to some other value.
 
-The `transduce()` function returns a transducer, which accepts a reducer function (which accepts an accumulator value
-and a next value as arguments and returns a new accumulator value) and returns a new reducer function that transforms
-the nextvalue argument before passing it on to the original reducer. The returned reducer function can be passed to
-Javascript's native `Array.prototype.reduce()` method, just like any other reducer.
+The `transduce()` function returns a transducer, i.e. a function that accepts a reducer function (which accepts an
+accumulator value and a next value as arguments and returns a new accumulator value) and returns a new reducer function
+that transforms the nextvalue argument before passing it on to the original reducer. The returned reducer function can
+be passed to Javascript's native `Array.prototype.reduce()` method, just like any other reducer.
 
 ```javascript
 
@@ -72,7 +72,10 @@ reduce(transducer(sum), 0, [1,2,3]); // returns 15
 
 ```
 
-The `reduce()` function can be used with any reducer function, not just those returned by `transduce()`.
+The `reduce()` function can be used with any reducer function, not just those returned by `transduce()`. Unlike
+Javascript's native `Array.prototype.reduce()` method, however, `reduce()` only passes the accumulator and nextvalue
+arguments to the reducer (also called the `previousValue` and `currentValue` arguments in MDN documentation parlance), 
+not the additional `currentIndex` and `array` arguments that `Array.prototype.reduce()` passes.
 
 ### filter(*func*)
 
