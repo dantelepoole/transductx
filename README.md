@@ -1,22 +1,23 @@
-# transducex
+# transductx
 A transducer library for Javascript
 
 ## Description
 
 This package offers a rather simple and straightforward way to create and use transducers in Node, as well as a
-transform module for lazily transforming any iterable object.
+transform module for lazily transforming any iterable object. Setting aside my confused terminology in function naming,
+it works fairly well.
 
 ## Installation
 
-To install the `transducex` package:
+To install the `transductx` package:
 
 ```
-$ npm install transducex
+$ npm install transductx
 ```
 
 ## Usage
 
-The `transducex` package exports four functions: `transduce()`, `filter()`, `transform()` and a convenience `reduce()`
+The `transductx` package exports four functions: `transduce()`, `filter()`, `transform()` and a convenience `reduce()`
 function.
 
 ### transduce(...*transformations*)
@@ -31,7 +32,7 @@ be passed to Javascript's native `Array.prototype.reduce()` method, just like an
 
 ```javascript
 
-const { transduce } = require('transducex');
+const { transduce } = require('transductx');
 
 const double = x => (x*2);
 const increment = x => (x+1);
@@ -62,7 +63,7 @@ method.
 
 ```javascript
 
-const { transduce, reduce } = require('transducex');
+const { transduce, reduce } = require('transductx');
 
 // ... skip definitions of double(), increment() and sum()
 
@@ -86,7 +87,7 @@ transformation.
 
 ``` javascript
 
-const { filter, transduce } = require('transducex');
+const { filter, transduce } = require('transductx');
 
 const isgreaterthan9 = x => (x > 9);
 const double = x => (x*2);
@@ -108,7 +109,7 @@ corresponding items are pulled from the returned iterable.
 
 ``` javascript
 
-const { filter, transform } = require('transducex');
+const { filter, transform } = require('transductx');
 
 const isgreaterthan9 = x => (x > 9);
 const double = x => (x*2);

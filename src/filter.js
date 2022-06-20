@@ -4,7 +4,7 @@
 
 'use strict';
 
-const TRANSFORM_DROP = Symbol.for('transducex/transform_drop');
+const TRANSFORM_DROP = Symbol.for('transductx/transform_drop');
 
 const ERR_BAD_PREDICATE = `The predicate function has type %s. Expected a function.`;
 

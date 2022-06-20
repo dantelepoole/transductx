@@ -6,7 +6,7 @@
 
 const ERR_BAD_ITERABLE = `The iterable has type %s. Expected an iterable object.`;
 const ERR_BAD_TRANSFORMATION = `The transformation has type %s. Expected a function.`;
-const TRANSFORM_DROP = Symbol.for('transducex/transform_drop');
+const TRANSFORM_DROP = Symbol.for('transductx/transform_drop');
 
 const fail = require('../lib/fail');
 const notiterable = require('../lib/notiterable');

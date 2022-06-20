@@ -1,5 +1,5 @@
 {
-  "name": "transducex",
+  "name": "transductx",
   "version": "1.0.0",
   "description": "A transducer library for Javascript",
   "main": "./src/index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dantelepoole/transducex.git"
+    "url": "git+https://github.com/dantelepoole/transductx.git"
   },
   "keywords": [
     "Node",
@@ -19,7 +19,7 @@
   "author": "Dante le Poole <dantelepoole@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dantelepoole/transducex/issues"
+    "url": "https://github.com/dantelepoole/transductx/issues"
   },
-  "homepage": "https://github.com/dantelepoole/transducex#readme"
+  "homepage": "https://github.com/dantelepoole/transductx#readme"
 }
