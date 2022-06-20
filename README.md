@@ -55,7 +55,8 @@ transduce(double, increment).reduce(sum, 0, [1,2,3]); // returns 15
 
 ```
 
-Note that the `reduce()` method works with any iterable object, not just arrays.
+Note that the `reduce()` method works with any iterable object, not just arrays. If an array is passed to `reduce()`, it
+also returns an array. Otherwise, it returns a simple object that implements the iterable protocol.
 
 The `reduce()` method is also exported as a standalone function. When using it standalone, the reducer must first be
 passed through the transducer, as is also the case when reducing with Javascript's native `Array.prototype.reduce()`
