@@ -3,50 +3,12 @@ A transducer library for Javascript
 
 ## Description
 
-In functional programming in Javascript, you often want to apply multiple map and/or filter functions to an array of
-values before reducing the array to a single result. If you do so using `map()`, `filter()` and `reduce()` methods of
-the native Javascript `Array` class, it will iterate over the entire array for each method. For example:
-
-```javascript
-
-const double = x => (x*2)
-const isgreaterthan9 = x => (x > 9);
-const sum = (a,b) => (a+b);
-const numbers1to10 = [1,2,3,4,5,6,7,8,9,10];
-
-const result = numbers1to10
-                 .filter(isgreaterthan9)
-                 .map(double)
-                 .reduce(sum, 0);
-
-```
-
-In the above example, the result will be `20`. However, to obtain this result the `numbers1to10` array had to be
-iterated over three times. Transduction is the technique for combining multiple map or filter operations with a reduce
-operation in such a manner that the input array only needs to be iterated over a single time. It won't make much of a
-difference in the simple example above, but it can enhance performance significantly when processing large arrays.
-
-For more details on how transductions works, see the following [article](https://codeburst.io/transduction-functional-programming-in-javascript-3b494758a868#:~:text=Transduction%20is%20a%20performance%20optimisation,function%20and%20an%20initial%20value.).
-
-Using `transducex` the example above would be rewritten as:
-
-```javascript
-
-const transducex = require('transducex');
-const predicate = require('transducex/predicate'); // necessary to perform filter transformations
-
-// ... skip definitions of double(), isgreaterthan9(), sum() and the numbers1to10 array
-
-const transducer = transducex( predicate(isgreaterthan9), double );
-const result = numbers1to10.reduce( transducer(sum), 0 );
-
-```
-
-The result is the same (`20`) but in this case the `numbers1to10` array is iterated over only once.
+This package offers a rather simple and straightforward way to create and use transducers in Node, as well as a
+transform module for lazily transforming any iterable object.
 
 ## Installation
 
-To install the `transducex` package just type:
+To install the `transducex` package:
 
 ```
 $ npm install transducex
@@ -54,89 +16,106 @@ $ npm install transducex
 
 ## Usage
 
-The `transducex` package contains two key functions: `transducex()` and `predicate()`.
+The `transducex` package exports four functions: `transduce()`, `filter()`, `transform()` and a convenience `reduce()`
+function.
 
-### transducex(...*transformations*)
+### transduce(...*transformations*)
 
-The `transducex()` function takes one or more transformation functions. A transformation function is any function that
-accepts a value and returns another value (essentially the type of function you would pass to Javascript's 
-`Array.prototype.map()` method).
+The `transduce()` function takes one or more transformation functions, i.e. any function that accepts a single argument
+and transforms it to some other value.
 
-The `transducex()` function returns a transducer, i.e. a function that accepts a reducer (the type of function that you
-would pass to Javascript's `Array.prototype.reduce()` method) and returns a new reducer that applies the transformations
-in order before invoking the argument reducer.
+The `transduce()` function returns a transducer, which accepts a reducer function (which accepts an accumulator value
+and a next value as arguments and returns a new accumulator value) and returns a new reducer function that transforms
+the nextvalue argument before passing it on to the original reducer. The returned reducer function can be passed to
+Javascript's native `Array.prototype.reduce()` method, just like any other reducer.
 
 ```javascript
 
-const transducex = require('transducex');
+const { transduce } = require('transducex');
 
 const double = x => (x*2);
 const increment = x => (x+1);
 const sum = (a,b) => (a+b);
 
-const transducer = transducex(double, increment);
+const transducer = transduce(double, increment);
 
 [1,2,3].reduce(transducer(sum), 0); // returns 15
 
 ```
 
-The transducer returned by `transducex()` has a convenience method `reduce()` that accepts a reducer function, an 
-initial value and an iterable object, and returns the result of transducing the items produced by the iterable object.
+### reduce(*reducer*, *initialvalue*, *iterable*)
+
+The transducer returned by `transduce()` has a convenience method `reduce()` that accepts a reducer function, an 
+initial value and an iterable object, and returns the result of transducing the items produced by the iterable.
 
 ```javascript
 
-transducex(double, increment).reduce(sum, 0, [1,2,3]); // returns 15
+transduce(double, increment).reduce(sum, 0, [1,2,3]); // returns 15
 
 ```
 
 Note that the `reduce()` method works with any iterable object, not just arrays.
 
-The `reduce()` method is also exported as a standalone function. To use it as such, the reducer must be passed through
-the transducer first, just like when passing it to Javascript's native `Array.prototype.reduce()` method:
+The `reduce()` method is also exported as a standalone function. When using it standalone, the reducer must first be
+passed through the transducer, as is also the case when reducing with Javascript's native `Array.prototype.reduce()`
+method.
 
 ```javascript
 
-const transducex = require('transducex');
-const reduce = require('transducex/reduce');
+const { transduce, reduce } = require('transducex');
 
 // ... skip definitions of double(), increment() and sum()
 
-const transducer = transducex(double, increment)
+const transducer = transduce(double, increment);
+
 reduce(transducer(sum), 0, [1,2,3]); // returns 15
 
 ```
 
-The `reduce()` function can be used with any reducer function, regardless of transduction.
+The `reduce()` function can be used with any reducer function, not just those returned by `transduce()`.
 
-### predicate(*func*)
+### filter(*func*)
 
-The `predicate()` function is necessary to enable filter transformations, since `transducex` needs to be able to
-distinguish functions that transform their argument from functions that filter their argument.
-
-Any function that transforms its argument can be passed directly to `transducex()`. To pass a filter function you must
-first pass it to `predicate()` before passing the result to `transducex()`.
+Any transformation function that serves to filter out certain values rather than transforming them *must* be passed
+to the `filter()` function before using it to transduce, otherwise the transduction will not work as intended. The 
+`filter()` function allows `transduce()` to recognize the function as a filter transformation rather than a regular
+transformation.
 
 ``` javascript
 
-const transducex = require('transducex');
-const predicate = require('transducex/predicate');
+const { filter, transduce } = require('transducex');
 
-const isgreaterthan9 = predicate(x => (x > 9));
+const isgreaterthan9 = x => (x > 9);
 const double = x => (x*2);
 const sum = (a,b) => (a+b);
 
-transducex(isgreaterthan9, double).reduce(sum, 0, [8,9,10,11]); // returns 42
+transduce( filter(isgreaterthan9), double ).reduce(sum, 0, [8,9,10,11]); // returns 42
 
 ```
 
-Be careful to always pass a filter transformation through `predicate()` before using it to create a transducer. Passing
-a filter transformation directly to `transducex()` without first sending it to `predicate()` will at best cause the
-reducer to throw an error. At worst, it will cause the reducer to produce unexpected and incorrect results.
+### transform(...*transformations*)
 
-The same applies to regular transformations. These should never be passed to `predicate()` and instead be passed to 
-`transducex()` directly. Among other things, `predicate()` coerces the transformation's return value to a boolean
-value and will cause the reducer the drop any values for which the transformation returns `false`. This is not the
-desired behaviour for a regular transformation.
+The `transform()` function works the same way as `transduce()` except that instead of returning a transducer that
+accepts a reducer and returns a new reducer that transforms the values passed to it, it returns a transformer that
+accepts any iterable object and returns a new iterable object that transforms the values produced by the original
+iterable.
+
+The returned iterable operates lazily, i.e. it only pulls individual items from the original iterable when the
+corresponding items are pulled from the returned iterable.
+
+``` javascript
+
+const { filter, transform } = require('transducex');
+
+const isgreaterthan9 = x => (x > 9);
+const double = x => (x*2);
+const sum = (a,b) => (a+b);
+
+const transformer = transform( filter(isgreaterthan9), double );
+
+for( const item of transformer([8,9,10,11]) ) console.log(item); // prints '20' and then '22'
+
+```
 
 ## Typescript declarations?
 
