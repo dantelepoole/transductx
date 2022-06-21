@@ -169,6 +169,23 @@ reduce(transducer, 0, [8,9,10,11,12,13,14,15]); // returns 26
 
 Also, `reduce()` is curried, so you can pass the arguments in separate calls.
 
+```javascript
+
+const { predicate, reduce, transduce } = require('transductx');
+
+const iseven = x => (x%2) === 0;
+const isgreaterthan10 = x => (x > 10);
+const sum = (a,b) => (a+b);
+
+const transformer = predicate(iseven, isgreaterthan10);
+const transducer = transduce(transformer, sum);
+
+const sumevennumbersgreaterthan10 = reduce(transducer, 0); // curried
+
+sumevennumbersgreaterthan10([8,9,10,11,12,13,14,15]); // returns 26
+
+```
+
 ## Typescript declarations?
 
 Nope.
