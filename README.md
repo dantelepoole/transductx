@@ -177,8 +177,7 @@ const iseven = x => (x%2) === 0;
 const isgreaterthan10 = x => (x > 10);
 const sum = (a,b) => (a+b);
 
-const transformer = predicate(iseven, isgreaterthan10);
-const transducer = transduce(transformer, sum);
+const transducer = transduce( predicate(iseven, isgreaterthan10), sum );
 
 const sumevennumbersgreaterthan10 = reduce(transducer, 0); // curried
 
