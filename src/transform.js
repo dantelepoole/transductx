@@ -17,11 +17,12 @@ module.exports = function transform(...transformers) {
 
     const transformercount = transformers.length;
 
-    return function transformer(value) {
+    return function compositetransformer(value) {
 
         for(let index = 0; index < transformercount; index += 1) {
 
-            value = transformers[index](value);
+            const transformer = transformers[index];
+            value = transformer(value);
 
             if(value === TRANSFORM_REJECT) break;
         }
