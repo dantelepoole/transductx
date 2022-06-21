@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const { predicate } = require('../src/');
 
-const TRANSFORM_REJECT = Symbol.for('transductx/transform/reject');
+const TRANSFORM_REJECT = require('../lib/transformrejectsymbol');
 
 const iseven = x => (x%2) === 0;
 const isgt10 = x => (x > 10);

@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const { transform } = require('../src/');
 
-const TRANSFORM_REJECT = Symbol.for('transductx/transform/reject');
+const TRANSFORM_REJECT = require('../lib/transformrejectsymbol');
 
 const double = x => (x*2);
 const increment = x => (x+1);
