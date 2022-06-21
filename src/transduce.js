@@ -4,53 +4,29 @@
 
 'use strict';
 
-const ERR_BAD_REDUCER = `The reducer has type %s. Expected a function.`;
-const ERR_BAD_TRANSFORMATION = `The transformation has type %s. Expected a function.`;
-const TRANSFORM_DROP = Symbol.for('transductx/transform_drop');
+const ERR_BAD_TRANSFORMER = `The transformer has type %s. Expected a function.`;
+const ERR_BAD_REDUCER = `The reducer has type %s. Expected a function`;
+const TRANSFORM_REJECT = Symbol.for('transductx/transform/reject');
 
+const curry = require('../lib/curry');
 const fail = require('../lib/fail');
+const isiterable = require('../lib/isiterable');
 const notfunction = require('../lib/notfunction');
-const reduce = require('./reduce');
+const transform = require('./transform');
 const type = require('../lib/type');
 
-module.exports = function transduce(...transformations) {
+module.exports = curry(2, transduce);
 
-    const transform = composetransform(transformations);
+function transduce(transformer, reducer) {
 
-    function transducer(reducer) {
+    if( isiterable(transformer) ) transformer = transform(...transformer);
+    else if( notfunction(transformer) ) fail(ERR_BAD_TRANSFORMER, type(transformer));
 
-        if( notfunction(reducer) ) fail(ERR_BAD_REDUCER, type(reducer));
+    if( notfunction(reducer) ) fail(ERR_BAD_REDUCER, type(reducer));
 
-        return function transformreducer(accumulator, nextvalue) {
+    return function transducer(accumulator, nextvalue) {
 
-            nextvalue = transform(nextvalue);
-
-            return (nextvalue === TRANSFORM_DROP) ? accumulator : reducer(accumulator, nextvalue);
-        }
+        nextvalue = transformer(nextvalue);
+        return (nextvalue === TRANSFORM_REJECT) ? accumulator : reducer(accumulator, nextvalue);
     }
-
-    transducer.reduce = reduce;
-
-    return transducer;
-}
-
-function composetransform(transformations) {
-
-    transformations.forEach(validatetransformation);
-
-    return function transformvalue(value) {
-
-        for(let index = 0; index < transformations.length; index += 1) {
-
-            value = transformations[index](value);
-
-            if(value === TRANSFORM_DROP) break;
-        }
-
-        return value;
-    }
-}
-
-function validatetransformation(transformation) {
-    if( notfunction(transformation) ) fail(ERR_BAD_TRANSFORMATION, type(transformation));
 }

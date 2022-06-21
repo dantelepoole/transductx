@@ -6,8 +6,8 @@
 'use strict';
 
 module.exports = {
-    filter    : require('./filter'),
-    reduce    : require('./reduce'),
-    transduce : require('./transduce'),
-    transform : require('./transform')
+    predicate  : require('./predicate'),
+    reduce     : require('./reduce'),
+    transduce  : require('./transduce'),
+    transform  : require('./transform')
 }

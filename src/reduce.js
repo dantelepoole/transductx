@@ -4,29 +4,34 @@
 
 'use strict';
 
-const ERR_BAD_ITERABLE = `The iterable has type %s. Expected an iterable object.`;
+const ERR_BAD_LIST = `The list has type %s. Expected an iterable object or an object with a 'reduce()' method.`;
 const ERR_BAD_REDUCER = `The reducer has type %s. Expected a function.`;
 
+const curry = require('../lib/curry');
 const fail = require('../lib/fail');
-const isarray = require('../lib/isarray');
 const isfunction = require('../lib/isfunction');
 const isiterable = require('../lib/isiterable');
 const notfunction = require('../lib/notfunction');
 const type = require('../lib/type');
 
-module.exports = function reduce(reducer, initialvalue, iterable) {
+module.exports = curry(3, reduce);
+
+function reduce(reducer, initialvalue, list) {
 
     if( notfunction(reducer) ) fail(ERR_BAD_REDUCER, type(reducer));
-    else if( isfunction(this) ) reducer = this(reducer);
 
-    return isarray(iterable) ? iterable.reduce(reducer, initialvalue)
-         : isiterable(iterable) ? reduceiterable(reducer, initialvalue, iterable)
-         : fail(ERR_BAD_ITERABLE, type(iterable));
+    return isreducable(list) ? list.reduce(reducer, initialvalue)
+         : isiterable(list) ? reduceiterable(reducer, initialvalue, list)
+         : fail(ERR_BAD_LIST, type(list));
 }
 
 function reduceiterable(reducer, accumulator, iterable) {
 
-    for(const value of iterable) accumulator = reducer(accumulator, value);
+    for(const item of iterable) accumulator = reducer(accumulator, item);
 
     return accumulator;
+}
+
+function isreducable(list) {
+    return isfunction(list?.reduce);
 }
