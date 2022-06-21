@@ -41,8 +41,11 @@ const increment = x => (x+1);
 const iseven = x => (x%2) === 0;
 const sum = (a,b) => (a+b);
 
-const transducer = transduce( predicate(iseven), double, increment );
-[1,2,3,4,5].reduce( transducer, 0 ); // returns 14
+let transducer = transduce( double, sum );
+[1,2,3,4,5].reduce( transducer, 0 ); // returns 30
+
+transducer = transduce( predicate(iseven), sum );
+[1,2,3,4,5].reduce( transducer, 0 ); // returns 6
 
 ```
 
