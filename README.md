@@ -98,24 +98,24 @@ const transducer = transduce( transformer, sum );
 
 ### predicate(...*filters*)
 
-Return a transformer that is recognized by other functions in the `transductx` package as a filter transformer instead
-of a regular transformer, i.e. a function that does not transform values but that either includes or omits them
-based on whether one or more predicates.
+Return a transformer that is recognized by `transduce()` as a filter transformer instead of a regular transformer, i.e.
+a function that does not transform values but that tells `transduce()` to either include or omit a value.
 
-Each *filter* should be a function that accepts a single argument and returns a boolish value to indicate
-whether or not its argument matches some condition, thus indicating to `transduce()` whether or not that value should
-be included or omitted from the transduction.
+Each *filter* should be a function that accepts a single argument and returns a boolean to indicate whether or not its
+argument value should be included or omitted from the transduction.
 
 > Failing to passing a filter *transformer* to `predicate()` prior to transducing will cause `transduce()` to produce
 > incorrect results. `predicate()` allows `transduce()` to recognize a *transformer* as a filter transformation rather
-> than a regular transformation. Likewise, passing a regular *transformer* to `predicate()` will also cause 
-> `transduce()` to produce incorrect results.
+> than a regular transformation.
+> 
+> Likewise, passing a regular *transformer* to `predicate()` will also cause `transduce()` to produce incorrect results.
+> So make sure to only pass filter functions to `predicate()`, not regular functions. `predicate()` can't tell the
+> difference, so it will accept either.
 
-See the example code for `transduce()` above for an illustration of `predicate()` in practice.
+See the sample code for `transduce()` above for an example of `predicate()` in action.
 
-If more than one *filter* is provided, the return function will include a value if and only if each *filter* accepts
-the value (returns a truthy return value for that value). If any *filter* rejects the value, the returned filter
-transformer rejects it as well.
+If more than one *filter* is provided, the returned transformer will filter out any value that is not accepted by all
+*filters*, i.e. it combines the *filters* with a logical AND operation.
 
 ```javascript
 
