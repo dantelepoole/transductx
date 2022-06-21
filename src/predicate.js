@@ -18,21 +18,15 @@ module.exports = function predicate(...filtertransformers) {
 
     const filter = compose(filtertransformers);
 
-    return function transformer(value) {
+    return function filtertransformer(value) {
         return filter(value) ? value : TRANSFORM_REJECT;
     }
 }
 
 function compose(filters) {
 
-    if( filters.length === 1 ) return filters[0];
-
-    return function filter(value) {
-
-        for(let index = 0; index < filters.length; index += 1) if( ! filters[index](value) ) return false;
-
-        return true;
-    }
+    return (filters.length === 1) ? filters[0]
+         : value => filters.every( filter => filter(value) );
 }
 
 function validatefilters(filters) {
