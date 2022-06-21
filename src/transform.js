@@ -5,7 +5,8 @@
 'use strict';
 
 const ERR_BAD_TRANSFORMER = `The transformer has type %s. Expected a function.`;
-const TRANSFORM_REJECT = Symbol.for('transductx/transform/reject');
+
+const TRANSFORM_REJECT = require('../lib/transformrejectsymbol');
 
 const fail = require('../lib/fail');
 const notfunction = require('../lib/notfunction');

@@ -6,7 +6,8 @@
 
 const ERR_BAD_TRANSFORMER = `The transformer has type %s. Expected a function.`;
 const ERR_BAD_REDUCER = `The reducer has type %s. Expected a function`;
-const TRANSFORM_REJECT = Symbol.for('transductx/transform/reject');
+
+const TRANSFORM_REJECT = require('../lib/transformrejectsymbol');
 
 const curry = require('../lib/curry');
 const fail = require('../lib/fail');

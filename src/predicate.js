@@ -4,7 +4,7 @@
 
 'use strict';
 
-const TRANSFORM_REJECT = Symbol.for('transductx/transform/reject');
+const TRANSFORM_REJECT = require('../lib/transformrejectsymbol');
 
 const ERR_BAD_FILTER_TRANSFORMER = `The filter transformer has type %s. Expected a function.`;
 
