@@ -6,36 +6,20 @@
 
 const TRANSFORM_REJECT = require('../lib/transformrejectsymbol');
 
-const ERR_BAD_FILTER_TRANSFORMER = `The filter transformer has type %s. Expected a function.`;
-
-const fail = require('../lib/fail');
-const notfunction = require('../lib/notfunction');
-const type = require('../lib/type');
+const predicate = require('../src/predicate');
 
 const alwaysfalse = ()=>false;
 
-module.exports = function drop(...filters) {
+module.exports = function drop(...filtertransformers) {
 
-    validatefilters(filters);
+    if( filtertransformers.length === 0 ) filtertransformers.push(alwaysfalse);
 
-    const filter = compose(filters);
+    const transformer = predicate(...filtertransformers);
 
     return function filtertransformer(value) {
-        return filter(value) ? TRANSFORM_REJECT : value;
+
+        const transformedvalue = transformer(value);
+
+        return (transformedvalue === TRANSFORM_REJECT) ? value : TRANSFORM_REJECT;
     }
-}
-
-function compose(filters) {
-
-    return (filters.length === 0) ? alwaysfalse
-         : (filters.length === 1) ? filters[0]
-         : value => filters.every( filter => filter(value) );
-}
-
-function validatefilters(filters) {
-    filters.forEach(validate);
-}
-
-function validate(filter) {
-    if( notfunction(filter) ) fail(ERR_BAD_FILTER_TRANSFORMER, type(filter));
 }
