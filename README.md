@@ -15,8 +15,7 @@ $ npm install transductx
 
 ## Usage
 
-The `transductx` package exports four functions: `transduce()`, `transform()`, `predicate()` and a convenience
-`reduce()` function.
+The `transductx` package exports the following functions.
 
 ### transduce(*transformer*, *reducer*)
 
@@ -99,7 +98,7 @@ const transducer = transduce( transformer, sum );
 
 ```
 
-### predicate(...*filters*)
+### predicate(...*filters*) - pass(...*filters*) - drop(...*filters*)
 
 Return a transformer that is recognized by `transduce()` as a filter transformer instead of a regular transformer, i.e.
 a function that does not transform values but that tells `transduce()` to either include or omit a value.
@@ -131,9 +130,24 @@ const sum = (a,b) => (a+b);
 
 // this transformer will accept only even numbers greater than 10 and less than 20
 const transformer = predicate(iseven, isgreaterthan10, islessthan20);
+
 const transducer = transduce(transformer, sum);
 
 [8,9,10,11,12,13,14,15].reduce(transducer, 0); // returns 26
+
+```
+
+`pass()` is an alias for `predicate()`. `drop()` is logical opposite of `predicate()`, i.e. it *omits* any values 
+for which all its argument filter functions return `true`.
+
+```javascript
+
+// this transformer will accept only even numbers of 10 or less
+const transformer = ( pass(iseven), drop(isgreaterthan10) );
+
+const transducer = transduce(transformer, sum);
+
+[8,9,10,11,12].reduce(transducer, 0); // returns 18
 
 ```
 
@@ -182,6 +196,28 @@ const transducer = transduce( predicate(iseven, isgreaterthan10), sum );
 const sumevennumbersgreaterthan10 = reduce(transducer, 0); // curried
 
 sumevennumbersgreaterthan10([8,9,10,11,12,13,14,15]); // returns 26
+
+```
+
+### transmap(*transformer*, *list*)
+
+This function accepts a transformer (or array of transformers) and an iterable object and returns an iterable object
+that transforms the values produced by the original iterable.
+
+Normally, to be truly functional, you would create a reducer that collects its value to an array, but `transmap()`
+returns an iterable object, not an array.
+
+The return iterable object pulls the values from the input iterable lazily.
+
+```javascript
+const { predicate, transmap } = require('transductx');
+
+const double = x => (x*2);
+const iseven = x => (x%2) === 0;
+
+const values = transmap( [predicate(iseven), double], [1,2,3,4,5,6,7,8,9,10]);
+
+for( const value of values ) console.log(value); // prints `4`, `8`, `12`, `16` and `20`
 
 ```
 
