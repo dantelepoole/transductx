@@ -1,16 +1,23 @@
 const { expect } = require('chai');
+const { spy } = require('sinon');
 const { predicate } = require('../src/');
 
 const TRANSFORM_REJECT = require('../lib/transformrejectsymbol');
 
-const iseven = x => (x%2) === 0;
-const isgt10 = x => (x > 10);
-const hastype = type => value => typeof value === type;
+const markerobject = Object.freeze( {} );
+const markerarray = Object.freeze( [] );
+
+const iseven = spy( x => (x%2) === 0 );
+const isgt10 = spy( x => (x > 10) );
+const hastype = spy( type => value => (typeof value === type) );
 
 describe('predicate()', function() {
 
     beforeEach(function() {
 
+        iseven.resetHistory();
+        isgt10.resetHistory();
+        hastype.resetHistory();
     })
 
     it('should return a function',
@@ -41,27 +48,36 @@ describe('predicate()', function() {
         it('should return its argument if its argument is accepted by every filter',
             function() {
 
-                let transformer = predicate(iseven, isgt10, hastype('number'));
+                const hastypenumber = spy( hastype('number') );
+                let transformer = predicate(iseven, isgt10, hastypenumber);
                 expect( transformer(14) ).to.be.equal(14);
+                expect( iseven.callCount ).to.be.equal(1);
+                expect( isgt10.callCount ).to.be.equal(1);
+                expect( hastypenumber.callCount ).to.be.equal(1);
 
-                transformer = predicate(hastype('object'));
-                const obj = {};
-                const array = [];
-                expect(transformer(null)).to.be.equal(null);
-                expect(transformer(obj)).to.be.equal(obj);
-                expect(transformer(array)).to.be.equal(array);
+                const hastypeobject = spy( hastype('object') );
+                transformer = predicate(hastypeobject);
+
+                expect( transformer(null) ).to.be.equal(null);
+                expect( transformer(markerobject) ).to.be.equal(markerobject);
+                expect( transformer(markerarray) ).to.be.equal(markerarray);
+                expect( hastypeobject.callCount ).to.be.equal(3);
             }
         )
 
         it('should return a special Symbol if its argument is rejected by any filter',
             function() {
 
-                const transformer = predicate(iseven, isgt10, hastype('number'));
+                const hastypenumber = spy( hastype('number') );
+                const transformer = predicate(iseven, isgt10, hastypenumber);
                 expect( transformer(9) ).to.be.equal(TRANSFORM_REJECT);
                 expect( transformer(13) ).to.be.equal(TRANSFORM_REJECT);
                 expect( transformer(null) ).to.be.equal(TRANSFORM_REJECT);
                 expect( transformer() ).to.be.equal(TRANSFORM_REJECT);
 
+                expect( iseven.callCount ).to.be.equal(4);
+                expect( isgt10.callCount ).to.be.equal(1); // the null matches the iseven() predicate
+                expect( hastypenumber.callCount ).to.be.equal(0);
             }
         )
 
