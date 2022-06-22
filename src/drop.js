@@ -12,7 +12,7 @@ const alwaysfalse = ()=>false;
 
 module.exports = function drop(...filtertransformers) {
 
-    if( filtertransformers.length === 0 ) filtertransformers.push(alwaysfalse);
+    if( filtertransformers.length === 0 ) filtertransformers = [alwaysfalse];
 
     const transformer = predicate(...filtertransformers);
 
