@@ -63,6 +63,7 @@ describe('reduce()', function() {
 
     it('should throw if the list has no `reduce()` and is not iterable.',
         function () {
+            expect( () => reduce(sum, 0, {}) ).to.throw();
         }
     )
 
