@@ -137,8 +137,8 @@ const transducer = transduce(transformer, sum);
 
 ```
 
-`pass()` is an alias for `predicate()`. `drop()` is logical opposite of `predicate()`, i.e. it *omits* any values 
-for which all its argument filter functions return `true`.
+`pass()` is an alias for `predicate()`. `drop()` is the logical opposite of `predicate()`, i.e. it *omits* any values 
+for which all *filters* return `true`.
 
 ```javascript
 
